@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#101113" />
+    <meta name="description" content="A private, searchable library for the code you reach for every day." />
+    <title>Snippet Vault — Developer Library</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="#" aria-label="Snippet Vault home">
+          <span class="brand-mark"><span></span><span></span><span></span></span>
+          <span>snippet<span class="brand-light">vault</span></span>
+        </a>
+        <button class="search-trigger" id="open-search" type="button">
+          <span class="search-icon">⌕</span><span>Quick search...</span><kbd>Ctrl K</kbd>
+        </button>
+        <div class="side-section">
+          <p class="section-label">LIBRARY</p>
+          <button class="nav-item active" data-filter="all"><span class="nav-icon">▦</span>All snippets<span class="nav-count" id="all-count"></span></button>
+          <button class="nav-item" data-filter="favorites"><span class="nav-icon">☆</span>Favorites</button>
+        </div>
+        <div class="side-section language-section">
+          <p class="section-label">LANGUAGES</p>
+          <div id="language-filters"></div>
+        </div>
+        <div class="sidebar-bottom">
+          <div class="storage-note"><span class="storage-dot"></span><span>Stored locally on this device</span></div>
+          <div class="profile-row"><div class="avatar">DV</div><div><strong>Developer</strong><span>Your private library</span></div><span class="profile-menu">···</span></div>
+        </div>
+      </aside>
+      <main class="main-content">
+        <header class="topbar">
+          <div class="breadcrumbs"><span>Library</span><span class="crumb-divider">/</span><strong id="current-filter">All snippets</strong></div>
+          <div class="top-actions"><button class="utility-button" id="export-snippets" type="button" title="Download a backup">Export</button><button class="utility-button" id="import-snippets" type="button" title="Restore from a JSON backup">Import</button><input id="import-file" type="file" accept="application/json,.json" hidden /><span class="keyboard-hint">Press <kbd>Ctrl/⌘ K</kbd> to search</span><button class="primary-button" id="add-snippet" type="button"><span>＋</span> New snippet</button></div>
+        </header>
+        <section class="page-heading">
+          <div><p class="eyebrow">YOUR DEVELOPER TOOLKIT</p><h1 id="page-title">All snippets<span class="heading-period">.</span></h1><p class="page-subtitle">A considered home for the code you reach for every day.</p></div>
+          <div class="snippet-total"><span class="total-number" id="heading-count">0</span><span>snippets saved</span></div>
+        </section>
+        <section class="toolbar" aria-label="Snippet filters">
+          <label class="filter-search"><span>⌕</span><input id="filter-input" type="search" placeholder="Filter by title, code, language, or tag..." autocomplete="off" /><kbd>/</kbd></label>
+          <div class="toolbar-right"><span id="result-count" class="result-count" aria-live="polite"></span><button class="sort-button" id="sort-button" type="button"><span>↕</span> Recently added</button></div>
+        </section>
+        <section class="snippet-list" id="snippet-list" aria-live="polite"></section>
+        <footer class="page-footer"><span>Made for the flow state.</span><span><kbd>Ctrl/⌘ K</kbd> search <span class="footer-dot">·</span> <kbd>/</kbd> filter</span></footer>
+      </main>
+    </div>
+    <div class="overlay hidden" id="palette-overlay" role="presentation">
+      <section class="palette" role="dialog" aria-modal="true" aria-label="Quick search">
+        <div class="palette-input-row"><span class="palette-search-icon">⌕</span><input id="palette-input" type="search" placeholder="Search snippets, languages, tags..." autocomplete="off" /><kbd>ESC</kbd></div>
+        <p class="palette-label">SNIPPETS <span id="palette-count"></span></p>
+        <div class="palette-results" id="palette-results"></div>
+        <div class="palette-footer"><span><kbd>↑</kbd><kbd>↓</kbd> to navigate</span><span><kbd>↵</kbd> to open <span class="footer-dot">·</span> <kbd>ESC</kbd> to close</span></div>
+      </section>
+    </div>
+    <div class="overlay hidden" id="editor-overlay" role="presentation">
+      <section class="editor-dialog" role="dialog" aria-modal="true" aria-labelledby="editor-title">
+        <header class="dialog-header"><div><p class="eyebrow">YOUR LIBRARY</p><h2 id="editor-title">New snippet</h2></div><button class="icon-button" data-close-editor type="button" aria-label="Close">×</button></header>
+        <form id="snippet-form">
+          <input type="hidden" id="snippet-id" />
+          <label class="form-label">TITLE<input id="snippet-title" required maxlength="90" placeholder="e.g. Fetch with timeout" /></label>
+          <div class="form-row">
+            <label class="form-label">LANGUAGE<select id="snippet-language"><option>JavaScript</option><option>TypeScript</option><option>Python</option><option>SQL</option><option>Bash</option><option>CSS</option><option>HTML</option><option>JSON</option><option>Go</option><option>Rust</option><option>Other</option></select></label>
+            <label class="form-label">TAGS<input id="snippet-tags" placeholder="api, async, fetch" /></label>
+          </div>
+          <label class="form-label">CODE<textarea id="snippet-code" class="code-input" required spellcheck="false" placeholder="Paste your code here..."></textarea></label>
+          <div class="notes-heading"><label class="form-label" for="snippet-notes">NOTES <span class="optional-label">MARKDOWN SUPPORTED</span></label></div>
+          <div class="notes-editor"><textarea id="snippet-notes" placeholder="Add context, usage notes, or links..." spellcheck="true"></textarea><div class="markdown-preview" id="markdown-preview"><span class="preview-placeholder">Live preview will appear here.</span></div></div>
+          <div class="dialog-actions"><button class="text-button danger hidden" id="delete-snippet" type="button">Delete snippet</button><span class="dialog-spacer"></span><button class="secondary-button" data-close-editor type="button">Cancel</button><button class="primary-button" type="submit">Save snippet</button></div>
+        </form>
+      </section>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
